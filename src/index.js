@@ -15,12 +15,14 @@ app.get('/', (req, res, next) => {
 });
 
 app.post('/pr-release', (req, res, next) => {
-  web.chat.postMessage({
-    channel: channelId,
-    text: 'Hello there',
-  })
-  .then(res => console.log('Message sent: ', res.ts))
-  .catch(console.error);
+  if (req.body.pull_request.title.match(/release/i)) {
+    web.chat.postMessage({
+      channel: channelId,
+      text: `${req.body.pull_request.title} of ${req.body.repository.name} needs to be reviewed. ${req.body.pull_request.url}`,
+    })
+    .then(res => console.log('Message sent: ', res.ts))
+    .catch(console.error);
+  }
   res.end();
   next();
 });
