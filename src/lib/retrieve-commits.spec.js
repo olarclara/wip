@@ -88,13 +88,31 @@ describe('retrieve commits', () => {
 
   test('call the received url', () => {
     retrieveCommits({ url });
-    expect(axios.get).toHaveBeenCalledWith(url);
+    expect(axios.get).toHaveBeenCalledWith(url, expect.any(Object));
   });
 
   test('return a list of commits', async () => {
-    axios.get.mockImplementation(() => ({ data: commits }));
+    axios.get.mockResolvedValue({ data: commits });
     const response = await retrieveCommits({ url });
 
     expect(response).toBe(commits);
+  });
+
+  test('get all commit pages', async () => {
+    axios.get
+      .mockResolvedValueOnce({
+        data: commits,
+        headers: {
+          link: '<https://api.github.com/repositories/111133411/commits?page=2>; rel="next", <https://api.github.com/repositories/111133411/commits?page=2>; rel="last"',
+        },
+      })
+      .mockResolvedValueOnce({
+        data: commits,
+        headers: {
+        },
+      });
+    const response = await retrieveCommits({ url });
+
+    expect(response.length).toBe(2);
   });
 });
