@@ -1,7 +1,7 @@
 jest.mock('axios');
 
 const axios = require('axios');
-const retrieveCommits = require('./retrieve-commits');
+const retrieveCommits = require('./');
 const url = "https://api.github.com/repos/baxterthehacker/public-repo/pulls/1/commits";
 const commits = [
   {
